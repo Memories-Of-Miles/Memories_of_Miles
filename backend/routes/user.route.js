@@ -1,11 +1,11 @@
 import express from "express"
-import { updateUserProfile } from "../controllers/user.controller.js"
-import { authenticateToken } from "../middleware/auth.js"
-import multer from "multer"
+import { getUsers, signout } from "../controllers/user.controller.js"
+import { verifyToken } from "../utils/verifyUser.js"
 
 const router = express.Router()
-const upload = multer({ dest: "uploads/profile_pics/" })
 
-router.put("/profile", authenticateToken, upload.single("profilePicture"), updateUserProfile)
+router.get("/getusers", verifyToken, getUsers)
+
+router.post("/signout", signout)
 
 export default router

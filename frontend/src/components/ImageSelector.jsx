@@ -41,7 +41,7 @@ const ImageSelector = ({ image, setImage, handleDeleteImage }) => {
   }, [image])
 
   return (
-    <div className="space-y-2">
+    <div>
       <input
         type="file"
         accept="image/*"
@@ -52,75 +52,29 @@ const ImageSelector = ({ image, setImage, handleDeleteImage }) => {
 
       {!image ? (
         <button
-          className="w-full h-60 flex flex-col items-center justify-center gap-4 bg-gradient-to-br from-emerald-50 to-teal-50 border-2 border-dashed border-emerald-200 hover:border-emerald-300 rounded-xl transition-all duration-300 hover:scale-[1.02] group"
+          className="w-full h-[220px] flex flex-col items-center justify-center gap-4 bg-slate-50 rounded-sm border border-slate-200/50"
           onClick={() => onChooseFile()}
         >
-          <div className="w-16 h-16 flex items-center justify-center bg-gradient-to-r from-emerald-500 to-teal-600 rounded-full shadow-lg group-hover:scale-110 transition-transform duration-300">
-            <BsUpload className="text-2xl text-white" />
+          <div className="w-14 h-14 flex items-center justify-center bg-cyan-100 rounded-full border border-cyan-100">
+            <BsUpload className="text-3xl font-bold text-cyan-500" />
           </div>
 
-          <div className="text-center">
-            <p className="text-lg font-semibold text-emerald-700 mb-1">
-              Upload Image
-            </p>
-            <p className="text-sm text-gray-600">Browse image files to upload</p>
-            <p className="text-xs text-gray-500 mt-1">Supports JPG, PNG, GIF</p>
-          </div>
+          <p className="text-sm text-slate-500">Browse image files to upload</p>
         </button>
       ) : (
-        <div className="w-full relative group">
-          <div className="relative overflow-hidden rounded-xl shadow-lg">
-            <img
-              src={previewUrl}
-              alt="Selected travel photo"
-              className="w-full h-80 object-cover transition-transform duration-300 group-hover:scale-105"
-            />
+        <div className="w-full relative">
+          <img
+            src={previewUrl}
+            alt="Selected"
+            className="w-full h-[300px] object-cover rounded-lg"
+          />
 
-            {/* Overlay for better button visibility */}
-            <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-
-            {/* Delete button */}
-            <button
-              className="absolute top-3 right-3 w-10 h-10 flex items-center justify-center bg-red-500 hover:bg-red-600 text-white rounded-full shadow-lg transition-all duration-300 hover:scale-110 opacity-80 hover:opacity-100"
-              onClick={handleRemoveImage}
-              title="Remove image"
-            >
-              <MdDeleteOutline className="text-lg" />
-            </button>
-          </div>
-
-          {/* Image info */}
-          <div className="mt-2 p-3 bg-gray-50 rounded-lg">
-            <div className="flex items-center justify-between text-sm text-gray-600">
-              <span className="flex items-center gap-2">
-                <svg
-                  className="w-4 h-4"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                >
-                  <rect
-                    x="3"
-                    y="3"
-                    width="18"
-                    height="18"
-                    rx="2"
-                    ry="2"
-                    strokeWidth="2"
-                  />
-                  <circle cx="9" cy="9" r="2" strokeWidth="2" />
-                  <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" strokeWidth="2" />
-                </svg>
-                Image uploaded successfully
-              </span>
-              <button
-                onClick={() => onChooseFile()}
-                className="text-emerald-600 hover:text-emerald-700 font-medium transition-colors duration-300"
-              >
-                Change
-              </button>
-            </div>
-          </div>
+          <button
+            className="btn-small btn-delete absolute top-2 right-2"
+            onClick={handleRemoveImage}
+          >
+            <MdDeleteOutline className="text-xl" />
+          </button>
         </div>
       )}
     </div>

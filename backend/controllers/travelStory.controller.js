@@ -4,11 +4,6 @@ import { errorHandler } from "../utils/error.js"
 import path from "path"
 import fs from "fs"
 
-// Get current directory for ES modules
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
-const rootDir = path.join(__dirname, "..")
-
 export const addTravelStory = async (req, res, next) => {
   const { title, story, visitedLocation, imageUrl, visitedDate } = req.body
 
@@ -71,6 +66,11 @@ export const imageUpload = async (req, res, next) => {
   }
 }
 
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+
+const rootDir = path.join(__dirname, "..")
+
 export const deleteImage = async (req, res, next) => {
   const { imageUrl } = req.query
 
@@ -118,7 +118,7 @@ export const editTravelStory = async (req, res, next) => {
     const travelStory = await TravelStory.findOne({ _id: id, userId: userId })
 
     if (!travelStory) {
-      return next(errorHandler(404, "Travel Story not found!")) // Added return here
+      next(errorHandler(404, "Travel Story not found!"))
     }
 
     const placeholderImageUrl = `http://localhost:3000/assets/placeholderImage.png`
@@ -144,66 +144,37 @@ export const deleteTravelStory = async (req, res, next) => {
   const { id } = req.params
   const userId = req.user.id
 
-  console.log('Delete request - Story ID:', id)
-  console.log('Delete request - User ID:', userId)
-
-  // Validate MongoDB ObjectId format
-  if (!id || !id.match(/^[0-9a-fA-F]{24}$/)) {
-    return res.status(400).json({
-      error: true,
-      message: "Invalid story ID format"
-    })
-  }
-
   try {
-    // Find and delete in one operation
-    const travelStory = await TravelStory.findOneAndDelete({ 
-      _id: id, 
-      userId: userId 
-    })
-
-    console.log('Story found and deleted:', !!travelStory)
+    const travelStory = await TravelStory.findOne({ _id: id, userId: userId })
 
     if (!travelStory) {
-      return res.status(404).json({
-        error: true,
-        message: "Travel Story not found or you don't have permission to delete it!"
-      })
+      next(errorHandler(404, "Travel Story not found!"))
     }
 
-    // Handle image cleanup after successful deletion
+    // delete travel story from the database
+    await travelStory.deleteOne({ _id: id, userId: userId })
+
+    // Check if the image is not a placeholder before deleting
     const placeholderImageUrl = `http://localhost:3000/assets/placeholderImage.png`
+
+    // Extract the filename from the imageUrl
     const imageUrl = travelStory.imageUrl
 
-    console.log('Image URL:', imageUrl)
-
     if (imageUrl && imageUrl !== placeholderImageUrl) {
-      try {
-        const filename = path.basename(imageUrl)
-        const filePath = path.join(rootDir, "uploads", filename)
-        if (fs.existsSync(filePath)) {
-          await fs.promises.unlink(filePath)
-          console.log(`Image file deleted: ${filename}`)
-        }
-      } catch (imageError) {
-        console.error("Error deleting image file:", imageError)
+      // Extract the filename from the image url
+      const filename = path.basename(imageUrl)
+      const filePath = path.join(rootDir, "uploads", filename)
+
+      // Check if the file exists before deleting
+      if (file.existsSync(filePath)) {
+        // delete the file
+        await fs.promises.unlink(filePath) // delete the file asynchronously
       }
     }
 
-    console.log('Sending success response')
-    res.status(200).json({ 
-      error: false,
-      message: "Travel story deleted successfully!" 
-    })
-
+    res.status(200).json({ message: "Travel story deleted successfully!" })
   } catch (error) {
-    console.error("Error deleting travel story:", error)
-    console.error("Error stack:", error.stack)
-    
-    res.status(500).json({
-      error: true,
-      message: "Internal server error while deleting story"
-    })
+    next(error)
   }
 }
 
@@ -275,4 +246,3 @@ export const filterTravelStories = async (req, res, next) => {
     next(error)
   }
 }
-
