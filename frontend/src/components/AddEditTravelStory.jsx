@@ -171,81 +171,135 @@ const AddEditTravelStory = ({
   }
 
   return (
-    <div className="relative">
-      <div className="flex items-center justify-between">
-        <h5 className="text-xl font-medium text-slate-700">
-          {type === "add" ? "Add Story" : "Update Story"}
+    <div className="relative bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl max-w-4xl mx-auto p-6 sm:p-8">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-6 pb-6 border-b border-gray-200">
+        <h5 className="text-2xl font-bold text-gray-800 flex items-center space-x-2">
+          {type === "add" ? (
+            <>
+              <div className="w-8 h-8 bg-gradient-to-r from-emerald-500 to-teal-600 rounded-lg flex items-center justify-center">
+                <IoMdAdd className="text-white text-lg" />
+              </div>
+              <span>Add New Story</span>
+            </>
+          ) : (
+            <>
+              <div className="w-8 h-8 bg-gradient-to-r from-emerald-500 to-teal-600 rounded-lg flex items-center justify-center">
+                <MdOutlineUpdate className="text-white text-lg" />
+              </div>
+              <span>Update Story</span>
+            </>
+          )}
         </h5>
 
-        <div>
-          <div className="flex items-center gap-3 bg-cyan-50/50 p-2 rounded-l-lg">
-            {type === "add" ? (
-              <button class="btn-small" onClick={handleAddOrUpdateClick}>
-                <IoMdAdd className="text-lg" /> ADD STORY
-              </button>
-            ) : (
-              <>
-                <button className="btn-small" onClick={handleAddOrUpdateClick}>
-                  <MdOutlineUpdate className="text-lg" /> UPDATE STORY
-                </button>
-
-                <button className="btn-small btn-delete">
-                  <MdOutlineDeleteOutline className="text-lg" /> DELETE STORY
-                </button>
-              </>
-            )}
-
-            <button class="" onClick={onClose}>
-              <IoMdClose className="text-xl text-slate-400" />
+        <div className="flex items-center space-x-3">
+          {type === "add" ? (
+            <button
+              className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white rounded-xl font-semibold transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl"
+              onClick={handleAddOrUpdateClick}
+            >
+              <IoMdAdd className="text-lg" />
+              <span>ADD STORY</span>
             </button>
-          </div>
+          ) : (
+            <>
+              <button
+                className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white rounded-xl font-semibold transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl"
+                onClick={handleAddOrUpdateClick}
+              >
+                <MdOutlineUpdate className="text-lg" />
+                <span>UPDATE</span>
+              </button>
 
-          {error && (
-            <p className="text-red-500 text-xs pt-2 text-right">{error}</p>
+              <button className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white rounded-xl font-semibold transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl">
+                <MdOutlineDeleteOutline className="text-lg" />
+                <span>DELETE</span>
+              </button>
+            </>
           )}
+
+          <button
+            className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-all duration-300"
+            onClick={onClose}
+          >
+            <IoMdClose className="text-xl" />
+          </button>
         </div>
       </div>
 
-      <div>
-        <div className="flex flex-1 flex-col gap-2 pt-4">
-          <label className="input-label">TITLE</label>
+      {/* Error Message */}
+      {error && (
+        <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-600 rounded-xl flex items-center space-x-2">
+          <svg
+            className="w-5 h-5 text-red-500 flex-shrink-0"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+          >
+            <path d="M13,13H11V7H13M13,17H11V15H13M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z" />
+          </svg>
+          <span className="text-sm font-medium">{error}</span>
+        </div>
+      )}
 
+      {/* Form Content */}
+      <div className="space-y-6">
+        {/* Title Input */}
+        <div className="space-y-2">
+          <label className="block text-sm font-semibold text-gray-700 uppercase tracking-wide">
+            TITLE
+          </label>
           <input
             type="text"
-            className="text-2xl text-slate-900 outline-none"
+            className="w-full text-2xl font-bold text-gray-900 bg-transparent border-b-2 border-gray-200 focus:border-emerald-500 outline-none transition-colors duration-300 py-2"
             placeholder="Once Upon A Time..."
             value={title}
             onChange={(e) => setTitle(e.target.value)}
           />
+        </div>
 
-          <div className="my-3">
-            <DateSelector date={visitedDate} setDate={setVisitedDate} />
-          </div>
+        {/* Date Selector */}
+        <div className="space-y-2">
+          <label className="block text-sm font-semibold text-gray-700 uppercase tracking-wide">
+            VISITED DATE
+          </label>
+          <DateSelector
+            date={visitedDate}
+            onDateChange={setVisitedDate}
+          />
+        </div>
 
+        {/* Image Selector */}
+        <div className="space-y-2">
+          <label className="block text-sm font-semibold text-gray-700 uppercase tracking-wide">
+            STORY IMAGE
+          </label>
           <ImageSelector
             image={storyImg}
             setImage={setStoryImg}
             handleDeleteImage={handleDeleteStoryImage}
           />
+        </div>
 
-          <div className="flex flex-col gap-2 mt-4">
-            <label className="input-label">STORY</label>
+        {/* Story Textarea */}
+        <div className="space-y-2">
+          <label className="block text-sm font-semibold text-gray-700 uppercase tracking-wide">
+            STORY
+          </label>
+          <textarea
+            className="w-full text-sm text-gray-900 bg-gray-50 border-2 border-gray-200 focus:border-emerald-500 focus:bg-white rounded-xl p-4 outline-none transition-all duration-300 resize-none"
+            placeholder="Tell us about your amazing adventure..."
+            rows={10}
+            value={story}
+            onChange={(e) => setStory(e.target.value)}
+          />
+        </div>
 
-            <textarea
-              type="text"
-              className="text-sm text-slate-950 outline-none bg-slate-100 p-2 rounded-sm"
-              placeholder="Your Story"
-              rows={10}
-              value={story}
-              onChange={(e) => setStory(e.target.value)}
-            />
-          </div>
-
-          <div className="pt-3">
-            <label className="input-label">VISITED LOCATIONS</label>
-
-            <TagInput tags={visitedLocation} setTags={setVisitedLocation} />
-          </div>
+        {/* Visited Locations */}
+        <div className="space-y-2">
+          <label className="block text-sm font-semibold text-gray-700 uppercase tracking-wide">
+            VISITED LOCATIONS
+          </label>
+          <TagInput tags={visitedLocation} setTags={setVisitedLocation} />
         </div>
       </div>
     </div>

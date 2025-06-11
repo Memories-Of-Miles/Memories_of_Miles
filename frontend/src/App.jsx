@@ -4,7 +4,7 @@ import Home from "./pages/Home/Home"
 import Login from "./pages/Auth/Login"
 import SignUp from "./pages/Auth/SignUp"
 import PrivateRoute from "./components/PrivateRoute"
-
+import ProfileEdit from "./pages/Home/ProfileEdit"
 const App = () => {
   return (
     <>
@@ -16,6 +16,7 @@ const App = () => {
 
           <Route path="/login" exact element={<Login />} />
           <Route path="/sign-up" exact element={<SignUp />} />
+          <Route path="/profile/edit" element={<ProfileEdit />} />
         </Routes>
       </BrowserRouter>
     </>
