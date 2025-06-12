@@ -2,8 +2,26 @@ import moment from "moment"
 import React from "react"
 import { IoMdClose } from "react-icons/io"
 
+/**
+ * FilterInfoTitle Component
+ * 
+ * Displays information about the active filter applied to travel stories.
+ * Shows either search results header or date range filter with the ability to clear.
+ * 
+ * @param {string} filterType - Type of filter being applied ('search' or 'date')
+ * @param {object} filterDate - Object containing from and to dates for filtering
+ * @param {function} onClear - Handler function to clear the current filter
+ */
 const FilterInfoTitle = ({ filterType, filterDate, onClear }) => {
+  /**
+   * DateRangeChip Component
+   * 
+   * Displays a chip containing the selected date range with a clear button.
+   * 
+   * @param {object} date - Object with from and to properties representing the date range
+   */
   const DateRangeChip = ({ date }) => {
+    // Format dates or show N/A if not provided
     const startDate = date?.from
       ? moment(date?.from).format("Do MMM YYYY")
       : "N/A"
@@ -11,8 +29,8 @@ const FilterInfoTitle = ({ filterType, filterDate, onClear }) => {
     const endDate = date?.to ? moment(date?.to).format("Do MMM YYYY") : "N/A"
 
     return (
-      <div className="flex items-center gap-2 bg-emerald-50 border border-emerald-200 px-4 py-2 rounded-xl shadow-sm hover:shadow-md transition-all duration-300">
-        <div className="flex items-center gap-1 text-emerald-700">
+      <div className="flex items-center gap-2 bg-slate-700/50 border border-slate-600 px-4 py-2 rounded-xl shadow-sm hover:shadow-md transition-all duration-300">
+        <div className="flex items-center gap-1 text-slate-200">
           <svg
             className="w-4 h-4"
             viewBox="0 0 24 24"
@@ -39,7 +57,7 @@ const FilterInfoTitle = ({ filterType, filterDate, onClear }) => {
 
         <button
           onClick={onClear}
-          className="p-1 rounded-full hover:bg-red-100 text-gray-400 hover:text-red-500 transition-all duration-300 hover:scale-110"
+          className="p-1 rounded-full hover:bg-slate-600 text-slate-400 hover:text-red-400 transition-all duration-300 hover:scale-110"
           title="Clear filter"
         >
           <IoMdClose className="w-4 h-4" />
@@ -48,12 +66,15 @@ const FilterInfoTitle = ({ filterType, filterDate, onClear }) => {
     )
   }
 
+  // Only render if a filter type is provided
   return (
     filterType && (
       <div className="mb-6 animate-fadeInDown">
+        {/* Search filter display */}
         {filterType === "search" ? (
           <div className="flex items-center gap-2 mb-4">
-            <div className="w-8 h-8 bg-gradient-to-r from-emerald-500 to-teal-600 rounded-lg flex items-center justify-center">
+            {/* Search icon with gradient background */}
+            <div className="w-8 h-8 bg-gradient-to-r from-emerald-400 to-sky-400 rounded-lg flex items-center justify-center">
               <svg
                 className="w-4 h-4 text-white"
                 viewBox="0 0 24 24"
@@ -64,12 +85,15 @@ const FilterInfoTitle = ({ filterType, filterDate, onClear }) => {
                 <path d="m21 21-4.35-4.35" strokeWidth="2" />
               </svg>
             </div>
-            <h3 className="text-xl font-bold text-gray-800">Search Results</h3>
+            {/* Search results title */}
+            <h3 className="text-xl font-bold text-white">Search Results</h3>
           </div>
         ) : (
+          /* Date filter display */
           <div className="flex flex-col sm:flex-row sm:items-center gap-3">
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-gradient-to-r from-emerald-500 to-teal-600 rounded-lg flex items-center justify-center">
+              {/* Location pin icon with gradient background */}
+              <div className="w-8 h-8 bg-gradient-to-r from-emerald-400 to-sky-400 rounded-lg flex items-center justify-center">
                 <svg
                   className="w-4 h-4 text-white"
                   viewBox="0 0 24 24"
@@ -83,11 +107,13 @@ const FilterInfoTitle = ({ filterType, filterDate, onClear }) => {
                   <circle cx="12" cy="10" r="3" strokeWidth="2" />
                 </svg>
               </div>
-              <h3 className="text-xl font-bold text-gray-800">
+              {/* Filter title */}
+              <h3 className="text-xl font-bold text-white">
                 Travel Stories from
               </h3>
             </div>
 
+            {/* Date range filter chip */}
             <DateRangeChip date={filterDate} />
           </div>
         )}

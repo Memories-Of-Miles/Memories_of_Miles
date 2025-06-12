@@ -2,10 +2,27 @@ import React, { useEffect, useRef, useState } from "react"
 import { BsUpload } from "react-icons/bs"
 import { MdDeleteOutline } from "react-icons/md"
 
-const ImageSelector = ({ image, setImage, handleDeleteImage }) => {
+/**
+ * ImageSelector Component
+ * 
+ * A component for selecting, previewing, and managing images for travel stories.
+ * Supports uploading new images, displaying existing images, and removing images.
+ * 
+ * @param {File|string} image - The current image (File object or URL string)
+ * @param {Function} setImage - Function to update the image state in parent component
+ * @param {Function} handleDeleteImage - Optional function to handle server-side image deletion
+ * @param {string} className - Optional additional CSS classes for styling
+ */
+const ImageSelector = ({ image, setImage, handleDeleteImage, className = "" }) => {
+  // Reference to hidden file input element
   const inputRef = useRef(null)
+  // State for managing the image preview URL
   const [previewUrl, setPreviewUrl] = useState(null)
 
+  /**
+   * Handle file selection from the file input
+   * @param {Event} event - The change event from the file input
+   */
   const handleImageChange = (event) => {
     const file = event.target.files[0]
 
@@ -14,25 +31,44 @@ const ImageSelector = ({ image, setImage, handleDeleteImage }) => {
     }
   }
 
+  /**
+   * Trigger the hidden file input click event
+   */
   const onChooseFile = () => {
     inputRef.current.click()
   }
 
+  /**
+   * Remove the current image
+   * Calls the external delete handler if provided
+   */
   const handleRemoveImage = () => {
+    if (typeof handleDeleteImage === 'function') {
+      handleDeleteImage()
+    }
     setImage(null)
-    handleDeleteImage()
   }
 
+  /**
+   * Effect to manage image preview URL
+   * 
+   * - If image is a string URL, use it directly
+   * - If image is a File object, create an object URL
+   * - Clean up object URLs when component unmounts or image changes
+   */
   useEffect(() => {
-    // if the image prop is a string(url), set it as the preview URL
+    // If the image prop is a string (URL), set it as the preview URL
     if (typeof image === "string") {
       setPreviewUrl(image)
     } else if (image) {
+      // Create an object URL for File objects
       setPreviewUrl(URL.createObjectURL(image))
     } else {
+      // No image, clear preview
       setPreviewUrl(null)
     }
 
+    // Cleanup function to revoke object URLs when component unmounts or image changes
     return () => {
       if (previewUrl && typeof previewUrl === "string" && !image) {
         URL.revokeObjectURL(previewUrl)
@@ -42,6 +78,7 @@ const ImageSelector = ({ image, setImage, handleDeleteImage }) => {
 
   return (
     <div className="space-y-2">
+      {/* Hidden file input element, triggered via button click */}
       <input
         type="file"
         accept="image/*"
@@ -50,25 +87,30 @@ const ImageSelector = ({ image, setImage, handleDeleteImage }) => {
         className="hidden"
       />
 
+      {/* Display upload button when no image is selected */}
       {!image ? (
         <button
-          className="w-full h-60 flex flex-col items-center justify-center gap-4 bg-gradient-to-br from-emerald-50 to-teal-50 border-2 border-dashed border-emerald-200 hover:border-emerald-300 rounded-xl transition-all duration-300 hover:scale-[1.02] group"
+          className={`w-full h-60 flex flex-col items-center justify-center gap-4 bg-slate-700/50 border-2 border-dashed border-slate-600 hover:border-sky-400 rounded-xl transition-all duration-300 hover:scale-[1.02] group ${className}`}
           onClick={() => onChooseFile()}
         >
-          <div className="w-16 h-16 flex items-center justify-center bg-gradient-to-r from-emerald-500 to-teal-600 rounded-full shadow-lg group-hover:scale-110 transition-transform duration-300">
+          {/* Upload icon with gradient background */}
+          <div className="w-16 h-16 flex items-center justify-center bg-gradient-to-r from-emerald-500 to-sky-500 rounded-full shadow-lg group-hover:scale-110 transition-transform duration-300">
             <BsUpload className="text-2xl text-white" />
           </div>
 
+          {/* Upload instructions */}
           <div className="text-center">
-            <p className="text-lg font-semibold text-emerald-700 mb-1">
+            <p className="text-lg font-semibold text-white mb-1">
               Upload Image
             </p>
-            <p className="text-sm text-gray-600">Browse image files to upload</p>
-            <p className="text-xs text-gray-500 mt-1">Supports JPG, PNG, GIF</p>
+            <p className="text-sm text-slate-300">Browse image files to upload</p>
+            <p className="text-xs text-slate-400 mt-1">Supports JPG, PNG, GIF</p>
           </div>
         </button>
       ) : (
+        /* Display image preview when an image is selected */
         <div className="w-full relative group">
+          {/* Image container with hover effects */}
           <div className="relative overflow-hidden rounded-xl shadow-lg">
             <img
               src={previewUrl}
@@ -76,8 +118,8 @@ const ImageSelector = ({ image, setImage, handleDeleteImage }) => {
               className="w-full h-80 object-cover transition-transform duration-300 group-hover:scale-105"
             />
 
-            {/* Overlay for better button visibility */}
-            <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            {/* Overlay with gradient for better button visibility */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 
             {/* Delete button */}
             <button
@@ -89,9 +131,10 @@ const ImageSelector = ({ image, setImage, handleDeleteImage }) => {
             </button>
           </div>
 
-          {/* Image info */}
-          <div className="mt-2 p-3 bg-gray-50 rounded-lg">
-            <div className="flex items-center justify-between text-sm text-gray-600">
+          {/* Image info panel */}
+          <div className="mt-2 p-3 bg-slate-700/50 border border-slate-600 rounded-lg backdrop-blur-sm">
+            <div className="flex items-center justify-between text-sm text-slate-300">
+              {/* Success message */}
               <span className="flex items-center gap-2">
                 <svg
                   className="w-4 h-4"
@@ -113,9 +156,11 @@ const ImageSelector = ({ image, setImage, handleDeleteImage }) => {
                 </svg>
                 Image uploaded successfully
               </span>
+              
+              {/* Change image button */}
               <button
                 onClick={() => onChooseFile()}
-                className="text-emerald-600 hover:text-emerald-700 font-medium transition-colors duration-300"
+                className="text-sky-400 hover:text-sky-300 font-medium transition-colors duration-300"
               >
                 Change
               </button>
