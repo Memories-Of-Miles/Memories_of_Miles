@@ -178,7 +178,7 @@ const Home = () => {
         handleClearSearch={handleClearSearch}
       />
 
-      <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-teal-50">
+      <div className="min-h-screen bg-gradient-to-br from-slate-800 to-gray-900">
         <div className="container mx-auto px-4 py-8 lg:py-12">
           <FilterInfoTitle
             filterType={filterType}
@@ -351,7 +351,7 @@ const Home = () => {
         pauseOnFocusLoss
         draggable
         pauseOnHover
-        theme="light"
+        theme="dark"
       />
     </>
   )

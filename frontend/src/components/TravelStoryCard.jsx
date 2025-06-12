@@ -3,6 +3,23 @@ import moment from "moment"
 import { FaLocationDot } from "react-icons/fa6"
 import { FaHeart } from "react-icons/fa"
 
+/**
+ * TravelStoryCard Component
+ * 
+ * Displays a travel story in a card format with image, title, description, date, and locations.
+ * Features interactive elements including favorite button and hover effects.
+ * Styled to match the mountain theme with dark slate backgrounds and emerald-sky accents.
+ * 
+ * @param {string} imageUrl - URL of the travel image
+ * @param {string} title - Title of the travel story
+ * @param {string} story - Text content of the story
+ * @param {Date} date - Date when the travel occurred
+ * @param {Array<string>} visitedLocation - Array of locations visited during the trip
+ * @param {boolean} isFavourite - Whether the story is marked as favorite
+ * @param {Function} onEdit - Handler for edit action
+ * @param {Function} onClick - Handler for card click
+ * @param {Function} onFavouriteClick - Handler for favorite button click
+ */
 const TravelStoryCard = ({
   imageUrl,
   title,
@@ -15,7 +32,7 @@ const TravelStoryCard = ({
   onFavouriteClick,
 }) => {
   return (
-    <div className="group relative bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl border border-gray-100 transition-all duration-300 hover:scale-[1.02] cursor-pointer">
+    <div className="group relative bg-slate-800/90 backdrop-blur-md rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl border border-slate-700/50 transition-all duration-300 hover:scale-[1.02] cursor-pointer">
       {/* Image Container */}
       <div className="relative overflow-hidden">
         <img
@@ -26,18 +43,18 @@ const TravelStoryCard = ({
         />
 
         {/* Gradient overlay for better text readability */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/20 to-transparent opacity-70 group-hover:opacity-100 transition-opacity duration-300"></div>
 
         {/* Favorite Button */}
         <button
-          className="absolute top-4 right-4 w-10 h-10 flex items-center justify-center bg-white/90 backdrop-blur-sm rounded-full shadow-lg hover:bg-white transition-all duration-300 hover:scale-110"
+          className="absolute top-4 right-4 w-10 h-10 flex items-center justify-center bg-slate-800/70 backdrop-blur-sm rounded-full shadow-lg hover:bg-slate-700 transition-all duration-300 hover:scale-110 border border-slate-700"
           onClick={onFavouriteClick}
         >
           <FaHeart
             className={`text-lg transition-colors duration-300 ${
               isFavourite
-                ? "text-red-500 hover:text-red-600"
-                : "text-gray-400 hover:text-red-500"
+                ? "text-red-500 hover:text-red-400"
+                : "text-slate-400 hover:text-red-400"
             }`}
           />
         </button>
@@ -47,11 +64,11 @@ const TravelStoryCard = ({
       <div className="p-5" onClick={onClick}>
         {/* Header */}
         <div className="mb-3">
-          <h3 className="text-lg font-bold text-gray-900 mb-1 line-clamp-1 group-hover:text-emerald-700 transition-colors duration-300">
+          <h3 className="text-lg font-bold text-white mb-1 line-clamp-1 group-hover:text-sky-400 transition-colors duration-300">
             {title}
           </h3>
 
-          <div className="flex items-center gap-2 text-sm text-gray-500">
+          <div className="flex items-center gap-2 text-sm text-slate-300">
             <svg
               className="w-4 h-4"
               viewBox="0 0 24 24"
@@ -78,7 +95,7 @@ const TravelStoryCard = ({
         </div>
 
         {/* Story Preview */}
-        <p className="text-sm text-gray-600 mb-4 line-clamp-2 leading-relaxed">
+        <p className="text-sm text-slate-300 mb-4 line-clamp-2 leading-relaxed">
           {story?.slice(0, 100)}
           {story?.length > 100 ? "..." : ""}
         </p>
@@ -86,21 +103,21 @@ const TravelStoryCard = ({
         {/* Location Tags */}
         {visitedLocation && visitedLocation.length > 0 && (
           <div className="flex items-center gap-2 text-sm">
-            <div className="flex items-center gap-1 text-emerald-600">
+            <div className="flex items-center gap-1 text-emerald-400">
               <FaLocationDot className="text-sm" />
-              <span className="font-medium text-gray-700">Visited:</span>
+              <span className="font-medium text-slate-200">Visited:</span>
             </div>
             <div className="flex flex-wrap gap-1">
               {visitedLocation.slice(0, 2).map((location, index) => (
                 <span
                   key={index}
-                  className="inline-flex items-center px-2 py-1 bg-emerald-50 text-emerald-700 text-xs font-medium rounded-lg border border-emerald-200"
+                  className="inline-flex items-center px-2 py-1 bg-slate-700/60 text-sky-300 text-xs font-medium rounded-lg border border-slate-600"
                 >
                   {location}
                 </span>
               ))}
               {visitedLocation.length > 2 && (
-                <span className="inline-flex items-center px-2 py-1 bg-gray-100 text-gray-600 text-xs font-medium rounded-lg">
+                <span className="inline-flex items-center px-2 py-1 bg-slate-700/40 text-slate-300 text-xs font-medium rounded-lg">
                   +{visitedLocation.length - 2} more
                 </span>
               )}
@@ -110,7 +127,7 @@ const TravelStoryCard = ({
       </div>
 
       {/* Bottom gradient for visual appeal */}
-      <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-500 to-teal-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+      <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-500 to-sky-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
     </div>
   )
 }
