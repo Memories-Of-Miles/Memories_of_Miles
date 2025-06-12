@@ -55,6 +55,7 @@ const AddEditTravelStory = ({
       }
     } catch (error) {
       console.log(error)
+      setError("Failed to add story. Please try again.")
     }
   }
 
@@ -171,20 +172,20 @@ const AddEditTravelStory = ({
   }
 
   return (
-    <div className="relative bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl max-w-4xl mx-auto p-6 sm:p-8">
+    <div className="relative bg-slate-800/90 backdrop-blur-md rounded-2xl shadow-2xl max-w-4xl mx-auto p-6 sm:p-8 border border-slate-700/50">
       {/* Header */}
-      <div className="flex items-center justify-between mb-6 pb-6 border-b border-gray-200">
-        <h5 className="text-2xl font-bold text-gray-800 flex items-center space-x-2">
+      <div className="flex items-center justify-between mb-6 pb-6 border-b border-slate-600/50">
+        <h5 className="text-2xl font-bold text-white flex items-center space-x-2">
           {type === "add" ? (
             <>
-              <div className="w-8 h-8 bg-gradient-to-r from-emerald-500 to-teal-600 rounded-lg flex items-center justify-center">
+              <div className="w-8 h-8 bg-gradient-to-r from-emerald-400 to-sky-400 rounded-lg flex items-center justify-center">
                 <IoMdAdd className="text-white text-lg" />
               </div>
               <span>Add New Story</span>
             </>
           ) : (
             <>
-              <div className="w-8 h-8 bg-gradient-to-r from-emerald-500 to-teal-600 rounded-lg flex items-center justify-center">
+              <div className="w-8 h-8 bg-gradient-to-r from-emerald-400 to-sky-400 rounded-lg flex items-center justify-center">
                 <MdOutlineUpdate className="text-white text-lg" />
               </div>
               <span>Update Story</span>
@@ -195,7 +196,7 @@ const AddEditTravelStory = ({
         <div className="flex items-center space-x-3">
           {type === "add" ? (
             <button
-              className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white rounded-xl font-semibold transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl"
+              className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-emerald-500 to-sky-500 hover:from-emerald-600 hover:to-sky-600 text-white rounded-xl font-semibold transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl"
               onClick={handleAddOrUpdateClick}
             >
               <IoMdAdd className="text-lg" />
@@ -204,7 +205,7 @@ const AddEditTravelStory = ({
           ) : (
             <>
               <button
-                className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white rounded-xl font-semibold transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl"
+                className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-emerald-500 to-sky-500 hover:from-emerald-600 hover:to-sky-600 text-white rounded-xl font-semibold transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl"
                 onClick={handleAddOrUpdateClick}
               >
                 <MdOutlineUpdate className="text-lg" />
@@ -219,7 +220,7 @@ const AddEditTravelStory = ({
           )}
 
           <button
-            className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-all duration-300"
+            className="p-2 text-slate-400 hover:text-slate-200 hover:bg-slate-700 rounded-lg transition-all duration-300"
             onClick={onClose}
           >
             <IoMdClose className="text-xl" />
@@ -229,15 +230,15 @@ const AddEditTravelStory = ({
 
       {/* Error Message */}
       {error && (
-        <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-600 rounded-xl flex items-center space-x-2">
+        <div className="mb-4 p-3 bg-red-900/30 border-l-4 border-red-500 rounded-xl flex items-center space-x-2">
           <svg
-            className="w-5 h-5 text-red-500 flex-shrink-0"
+            className="w-5 h-5 text-red-400 flex-shrink-0"
             viewBox="0 0 24 24"
             fill="currentColor"
           >
             <path d="M13,13H11V7H13M13,17H11V15H13M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z" />
           </svg>
-          <span className="text-sm font-medium">{error}</span>
+          <span className="text-sm font-medium text-red-300">{error}</span>
         </div>
       )}
 
@@ -245,12 +246,12 @@ const AddEditTravelStory = ({
       <div className="space-y-6">
         {/* Title Input */}
         <div className="space-y-2">
-          <label className="block text-sm font-semibold text-gray-700 uppercase tracking-wide">
+          <label className="block text-sm font-semibold text-slate-300 uppercase tracking-wide">
             TITLE
           </label>
           <input
             type="text"
-            className="w-full text-2xl font-bold text-gray-900 bg-transparent border-b-2 border-gray-200 focus:border-emerald-500 outline-none transition-colors duration-300 py-2"
+            className="w-full text-2xl font-bold text-white bg-transparent border-b-2 border-slate-600 focus:border-sky-500 outline-none transition-colors duration-300 py-2 placeholder-slate-500"
             placeholder="Once Upon A Time..."
             value={title}
             onChange={(e) => setTitle(e.target.value)}
@@ -259,34 +260,36 @@ const AddEditTravelStory = ({
 
         {/* Date Selector */}
         <div className="space-y-2">
-          <label className="block text-sm font-semibold text-gray-700 uppercase tracking-wide">
+          <label className="block text-sm font-semibold text-slate-300 uppercase tracking-wide">
             VISITED DATE
           </label>
           <DateSelector
             date={visitedDate}
             onDateChange={setVisitedDate}
+            className="bg-slate-700/50 border-slate-600 text-white"
           />
         </div>
 
         {/* Image Selector */}
         <div className="space-y-2">
-          <label className="block text-sm font-semibold text-gray-700 uppercase tracking-wide">
+          <label className="block text-sm font-semibold text-slate-300 uppercase tracking-wide">
             STORY IMAGE
           </label>
           <ImageSelector
             image={storyImg}
             setImage={setStoryImg}
             handleDeleteImage={handleDeleteStoryImage}
+            className="bg-slate-700/50 border-slate-600"
           />
         </div>
 
         {/* Story Textarea */}
         <div className="space-y-2">
-          <label className="block text-sm font-semibold text-gray-700 uppercase tracking-wide">
+          <label className="block text-sm font-semibold text-slate-300 uppercase tracking-wide">
             STORY
           </label>
           <textarea
-            className="w-full text-sm text-gray-900 bg-gray-50 border-2 border-gray-200 focus:border-emerald-500 focus:bg-white rounded-xl p-4 outline-none transition-all duration-300 resize-none"
+            className="w-full text-sm text-white bg-slate-700/50 border-2 border-slate-600 focus:border-sky-500 rounded-xl p-4 outline-none transition-all duration-300 resize-none placeholder-slate-400"
             placeholder="Tell us about your amazing adventure..."
             rows={10}
             value={story}
@@ -296,10 +299,14 @@ const AddEditTravelStory = ({
 
         {/* Visited Locations */}
         <div className="space-y-2">
-          <label className="block text-sm font-semibold text-gray-700 uppercase tracking-wide">
+          <label className="block text-sm font-semibold text-slate-300 uppercase tracking-wide">
             VISITED LOCATIONS
           </label>
-          <TagInput tags={visitedLocation} setTags={setVisitedLocation} />
+          <TagInput 
+            tags={visitedLocation} 
+            setTags={setVisitedLocation} 
+            className="bg-slate-700/50 border-slate-600 text-white"
+          />
         </div>
       </div>
     </div>

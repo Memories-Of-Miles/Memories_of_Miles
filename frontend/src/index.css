@@ -149,3 +149,13 @@
 .animation-delay-4000 {
   animation-delay: 4s;
 }
+
+/* Add to your global CSS file */
+.rdp-custom.dark .rdp-day:not(.rdp-day_selected):hover:not(.rdp-day_outside) {
+  background-color: rgba(100, 116, 139, 0.3) !important;
+}
+
+.rdp-custom.dark .rdp-button:hover:not([disabled]):not(.rdp-day_selected) {
+  background-color: rgba(100, 116, 139, 0.3) !important;
+  color: white !important;
+}
