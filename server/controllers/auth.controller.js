@@ -2,6 +2,7 @@ import bcryptjs from "bcryptjs"
 import User from "../models/user.model.js"
 import { errorHandler } from "../utils/error.js"
 import jwt from "jsonwebtoken"
+import axios from "axios"
 
 export const signup = async (req, res, next) => {
   const { username, email, password } = req.body
@@ -75,3 +76,36 @@ export const signin = async (req, res, next) => {
     next(error)
   }
 }
+
+export const verifyToken = (req, res, next) => {
+  const authHeader = req.headers.authorization
+
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return next(errorHandler(401, "Unauthorized - No token provided"))
+  }
+
+  const token = authHeader.split(" ")[1]
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET)
+    req.user = decoded
+    next()
+  } catch (error) {
+    return next(errorHandler(401, "Unauthorized - Invalid token"))
+  }
+}
+
+// Make sure your API calls include the token
+axios.defaults.withCredentials = true; // If using cookies
+
+// Or if using Authorization header:
+axios.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);

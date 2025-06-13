@@ -24,6 +24,7 @@ const AddEditTravelStory = ({
   )
 
   const [error, setError] = useState("")
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const addNewTravelStory = async () => {
     try {
@@ -56,6 +57,8 @@ const AddEditTravelStory = ({
     } catch (error) {
       console.log(error)
       setError("Failed to add story. Please try again.")
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
@@ -109,26 +112,43 @@ const AddEditTravelStory = ({
       } else {
         setError("Something went wrong! Please try again.")
       }
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
-  const handleAddOrUpdateClick = () => {
-    if (!title) {
+  const validateForm = () => {
+    if (!title.trim()) {
       setError("Please enter the title")
-      return
+      return false
     }
 
-    if (!story) {
+    if (!story.trim()) {
       setError("Please enter the story")
-      return
+      return false
+    }
+
+    if (visitedLocation.length === 0) {
+      setError("Please add at least one visited location")
+      return false
+    }
+
+    if (!visitedDate) {
+      setError("Please select when you visited")
+      return false
     }
 
     setError("")
+    return true
+  }
 
-    if (type === "edit") {
-      updateTravelStory()
-    } else {
-      addNewTravelStory()
+  const handleAddOrUpdateClick = () => {
+    if (validateForm()) {
+      if (type === "edit") {
+        updateTravelStory()
+      } else {
+        addNewTravelStory()
+      }
     }
   }
 
@@ -171,6 +191,50 @@ const AddEditTravelStory = ({
     }
   }
 
+  const handleDeleteStory = async () => {
+    if (window.confirm("Are you sure you want to delete this story? This action cannot be undone.")) {
+      try {
+        const response = await axiosInstance.delete(`/travel-story/delete-story/${storyInfo._id}`);
+        
+        if (response.data && !response.data.error) {
+          toast.success("Story deleted successfully!");
+          getAllTravelStories();
+          onClose();
+        }
+      } catch (error) {
+        console.error("Error deleting story:", error);
+        setError("Failed to delete story. Please try again.");
+      }
+    }
+  }
+
+  const resetForm = () => {
+    setTitle(storyInfo?.title || "");
+    setStory(storyInfo?.story || "");
+    setVisitedDate(storyInfo?.visitedDate || null);
+    setVisitedLocation(storyInfo?.visitedLocation || []);
+    setStoryImg(storyInfo?.imageUrl || null);
+    setError("");
+  };
+
+  const hasUnsavedChanges = () => {
+    if (type === "add") {
+      return title !== "" || story !== "" || visitedLocation.length > 0 || storyImg !== null;
+    } else {
+      return title !== storyInfo?.title || 
+             story !== storyInfo?.story || 
+             JSON.stringify(visitedLocation) !== JSON.stringify(storyInfo?.visitedLocation) ||
+             storyImg !== storyInfo?.imageUrl;
+    }
+  };
+
+  const handleClose = () => {
+    if (hasUnsavedChanges() && !window.confirm("You have unsaved changes. Are you sure you want to close?")) {
+      return;
+    }
+    onClose();
+  };
+
   return (
     <div className="relative bg-slate-800/90 backdrop-blur-md rounded-2xl shadow-2xl max-w-4xl mx-auto p-6 sm:p-8 border border-slate-700/50">
       {/* Header */}
@@ -198,21 +262,50 @@ const AddEditTravelStory = ({
             <button
               className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-emerald-500 to-sky-500 hover:from-emerald-600 hover:to-sky-600 text-white rounded-xl font-semibold transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl"
               onClick={handleAddOrUpdateClick}
+              disabled={isSubmitting}
             >
-              <IoMdAdd className="text-lg" />
-              <span>ADD STORY</span>
+              {isSubmitting ? (
+                <span className="flex items-center">
+                  <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  {type === "add" ? "ADDING..." : "UPDATING..."}
+                </span>
+              ) : (
+                <>
+                  {type === "add" ? <IoMdAdd className="text-lg" /> : <MdOutlineUpdate className="text-lg" />}
+                  <span>{type === "add" ? "ADD STORY" : "UPDATE"}</span>
+                </>
+              )}
             </button>
           ) : (
             <>
               <button
                 className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-emerald-500 to-sky-500 hover:from-emerald-600 hover:to-sky-600 text-white rounded-xl font-semibold transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl"
                 onClick={handleAddOrUpdateClick}
+                disabled={isSubmitting}
               >
-                <MdOutlineUpdate className="text-lg" />
-                <span>UPDATE</span>
+                {isSubmitting ? (
+                  <span className="flex items-center">
+                    <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    {type === "add" ? "ADDING..." : "UPDATING..."}
+                  </span>
+                ) : (
+                  <>
+                    {type === "add" ? <IoMdAdd className="text-lg" /> : <MdOutlineUpdate className="text-lg" />}
+                    <span>{type === "add" ? "ADD STORY" : "UPDATE"}</span>
+                  </>
+                )}
               </button>
 
-              <button className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white rounded-xl font-semibold transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl">
+              <button
+                className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white rounded-xl font-semibold transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl"
+                onClick={() => handleDeleteStory()}
+              >
                 <MdOutlineDeleteOutline className="text-lg" />
                 <span>DELETE</span>
               </button>
@@ -221,7 +314,7 @@ const AddEditTravelStory = ({
 
           <button
             className="p-2 text-slate-400 hover:text-slate-200 hover:bg-slate-700 rounded-lg transition-all duration-300"
-            onClick={onClose}
+            onClick={handleClose}
           >
             <IoMdClose className="text-xl" />
           </button>
