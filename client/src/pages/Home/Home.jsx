@@ -166,7 +166,11 @@ const Home = () => {
   }
 
   useEffect(() => {
-    getAllTravelStories()
+    const token = localStorage.getItem('token');
+    console.log('Token exists:', !!token);
+    console.log('Token prefix:', token?.substring(0, 10));
+    
+    getAllTravelStories();
   }, [])
 
   return (

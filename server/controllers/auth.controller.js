@@ -2,7 +2,6 @@ import bcryptjs from "bcryptjs"
 import User from "../models/user.model.js"
 import { errorHandler } from "../utils/error.js"
 import jwt from "jsonwebtoken"
-import axios from "axios"
 
 export const signup = async (req, res, next) => {
   const { username, email, password } = req.body
@@ -18,25 +17,23 @@ export const signup = async (req, res, next) => {
     return next(errorHandler(400, "All fields are required"))
   }
 
-  // check if the user already exists
+  // Check if the user already exists
   const existingUser = await User.findOne({ email })
-
   if (existingUser) {
-    return next(errorHandler(409, "User already exist with this email!"))
+    return next(errorHandler(409, "User already exists with this email!"))
   }
 
-  const hashedPassword = bcryptjs.hashSync(password, 10)
-
-  const newUser = new User({
-    username,
-    email,
-    password: hashedPassword,
-  })
-
   try {
-    await newUser.save()
+    const hashedPassword = bcryptjs.hashSync(password, 10)
 
-    res.json("Signup successful")
+    const newUser = new User({
+      username,
+      email,
+      password: hashedPassword,
+    })
+
+    await newUser.save()
+    res.status(201).json({ success: true, message: "Signup successful" })
   } catch (error) {
     next(error)
   }
@@ -51,27 +48,26 @@ export const signin = async (req, res, next) => {
 
   try {
     const validUser = await User.findOne({ email })
-
     if (!validUser) {
       return next(errorHandler(404, "User not found"))
     }
 
     const validPassword = bcryptjs.compareSync(password, validUser.password)
-
     if (!validPassword) {
       return next(errorHandler(400, "Wrong Credentials"))
     }
 
     const token = jwt.sign({ id: validUser._id }, process.env.JWT_SECRET)
-
-    const { password: pass, ...rest } = validUser._doc
+    const { password: pass, ...userData } = validUser._doc
 
     res
       .status(200)
-      .cookie("access_token", token, {
-        httpOnly: true,
+      .cookie("access_token", token, { httpOnly: true })
+      .json({
+        success: true,
+        token, // Important: Include token in response body
+        user: userData,
       })
-      .json(rest)
   } catch (error) {
     next(error)
   }
@@ -94,18 +90,3 @@ export const verifyToken = (req, res, next) => {
     return next(errorHandler(401, "Unauthorized - Invalid token"))
   }
 }
-
-// Make sure your API calls include the token
-axios.defaults.withCredentials = true; // If using cookies
-
-// Or if using Authorization header:
-axios.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => Promise.reject(error)
-);
