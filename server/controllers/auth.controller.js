@@ -60,14 +60,11 @@ export const signin = async (req, res, next) => {
     const token = jwt.sign({ id: validUser._id }, process.env.JWT_SECRET)
     const { password: pass, ...userData } = validUser._doc
 
-    res
-      .status(200)
-      .cookie("access_token", token, { httpOnly: true })
-      .json({
-        success: true,
-        token, // Important: Include token in response body
-        user: userData,
-      })
+    res.status(200).json({
+      success: true,
+      token, // <-- this is important for frontend
+      user: userData,
+    })
   } catch (error) {
     next(error)
   }

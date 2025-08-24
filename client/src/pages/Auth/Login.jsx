@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
-import axiosInstance from "../utils/axiosInstance"
-import { validateEmail } from "../utils/helper"
+import axiosInstance from "../../utils/axiosInstance"
+import { validateEmail } from "../../utils/helper"
 
 const Login = () => {
   const navigate = useNavigate()
@@ -28,9 +28,12 @@ const Login = () => {
       const response = await axiosInstance.post("/auth/signin", { email, password })
       const { token, user } = response.data
 
-      localStorage.setItem("token", token)
-      setError("")
-      navigate("/dashboard")
+      // After successful login
+      if (response.data && response.data.token) {
+        localStorage.setItem('token', response.data.token);
+        setError("")
+        navigate("/dashboard")
+      }
     } catch (err) {
       const msg = err.response?.data?.message || "Login failed"
       setError(msg)

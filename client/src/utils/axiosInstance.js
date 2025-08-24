@@ -1,42 +1,22 @@
-import axios from "axios"
-
-const BASE_URL = "http://localhost:3000/api"
+import axios from 'axios';
 
 const axiosInstance = axios.create({
-  baseURL: BASE_URL,
-  withCredentials: true, // For cookie-based auth
-})
+  baseURL: 'http://localhost:3000/api',
+  withCredentials: true
+});
 
-// Add request interceptor to include token in all requests
 axiosInstance.interceptors.request.use(
   (config) => {
-    // Get token from localStorage
-    const token = localStorage.getItem("token")
-
+    const token = localStorage.getItem('token');
     if (token) {
-      // Add token to Authorization header
-      config.headers.Authorization = `Bearer ${token}`
+      config.headers.Authorization = `Bearer ${token}`;
     }
-    return config
+    return config;
   },
   (error) => Promise.reject(error)
-)
+);
 
-// Add response interceptor to handle auth errors
-axiosInstance.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    if (error.response?.status === 401) {
-      // Token expired or invalid - redirect to login
-      console.log("Authentication error: Redirecting to login")
-      localStorage.removeItem("token")
-      window.location.href = "/login"
-    }
-    return Promise.reject(error)
-  }
-)
-
-export default axiosInstance
+export default axiosInstance;
 
 // In your backend auth.controller.js
 export const signin = async (req, res, next) => {
