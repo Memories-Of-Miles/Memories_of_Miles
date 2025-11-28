@@ -5,12 +5,10 @@ import { useNavigate } from "react-router-dom"
 
 /**
  * Profile Component
- * 
- * Displays user information and provides access to profile actions.
+ * * Displays user information and provides access to profile actions.
  * Features responsive design with different layouts for mobile and desktop.
  * Includes user avatar, username display, and logout functionality.
- * 
- * @param {Function} onLogout - Handler for user logout action
+ * * @param {Function} onLogout - Handler for user logout action
  * @param {boolean} isLoggingOut - Indicates if logout process is in progress
  */
 const Profile = ({ onLogout, isLoggingOut }) => {
@@ -42,7 +40,7 @@ const Profile = ({ onLogout, isLoggingOut }) => {
       {/* Avatar with click to profile */}
       <div className="relative">
         <div
-          className="w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center rounded-full bg-gradient-to-tr from-emerald-400 via-sky-400 to-cyan-400 shadow-xl border-4 border-slate-700 ring-2 ring-slate-600 hover:ring-sky-400 transition-all duration-300 cursor-pointer select-none text-white text-xl font-extrabold uppercase"
+          className="w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center rounded-full bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-500 shadow-xl border-4 border-gray-900 ring-2 ring-gray-700 hover:ring-indigo-500 transition-all duration-300 cursor-pointer select-none text-white text-xl font-extrabold uppercase"
           onClick={() => navigate("/profile/edit")}
           title="View/Edit Profile"
         >
@@ -58,7 +56,7 @@ const Profile = ({ onLogout, isLoggingOut }) => {
           )}
         </div>
         {/* Online status indicator */}
-        <span className="absolute bottom-1 right-1 w-3 h-3 bg-emerald-400 border-2 border-slate-700 rounded-full shadow-md animate-pulse"></span>
+        <span className="absolute bottom-1 right-1 w-3 h-3 bg-emerald-500 border-2 border-gray-900 rounded-full shadow-md animate-pulse"></span>
       </div>
 
       {/* User Info - Desktop Only */}
@@ -67,7 +65,7 @@ const Profile = ({ onLogout, isLoggingOut }) => {
           {currentUser?.username || "User"}
         </span>
         <button
-          className="mt-1 text-xs px-3 py-1 rounded-full bg-gradient-to-r from-rose-400 to-red-500 text-white font-semibold shadow hover:from-red-500 hover:to-rose-400 transition-all duration-300 disabled:opacity-60"
+          className="mt-1 text-xs px-3 py-1 rounded-full bg-gradient-to-r from-rose-500 to-red-600 text-white font-semibold shadow hover:from-red-600 hover:to-rose-500 transition-all duration-300 disabled:opacity-60"
           onClick={onLogout}
           disabled={isLoggingOut}
         >
@@ -78,12 +76,12 @@ const Profile = ({ onLogout, isLoggingOut }) => {
       {/* Mobile Dropdown Menu */}
       <div className="sm:hidden relative" ref={dropdownRef}>
         <button
-          className="p-2 rounded-full bg-slate-700 hover:bg-slate-600 transition-colors duration-300"
+          className="p-2 rounded-full bg-gray-800 hover:bg-gray-700 transition-colors duration-300 border border-gray-700"
           onClick={() => setDropdownOpen((v) => !v)}
           aria-label="User menu"
         >
           <svg
-            className="w-5 h-5 text-sky-400"
+            className="w-5 h-5 text-indigo-400"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
@@ -95,12 +93,12 @@ const Profile = ({ onLogout, isLoggingOut }) => {
         </button>
         {/* Dropdown content - only shown when open */}
         {dropdownOpen && (
-          <div className="absolute right-0 mt-2 w-40 bg-slate-800 rounded-xl shadow-xl border border-slate-700 z-50 animate-fade-in">
-            <div className="px-4 py-3 border-b border-slate-700">
-              <div className="font-bold text-white">{currentUser?.username || "User"}</div>
+          <div className="absolute right-0 mt-2 w-40 bg-gray-900 rounded-xl shadow-xl shadow-black/50 border border-gray-700 z-50 animate-fade-in">
+            <div className="px-4 py-3 border-b border-gray-800">
+              <div className="font-bold text-white truncate">{currentUser?.username || "User"}</div>
             </div>
             <button
-              className="w-full text-left px-4 py-2 text-sm text-red-400 hover:bg-slate-700 rounded-b-xl transition-colors duration-200 font-semibold"
+              className="w-full text-left px-4 py-2 text-sm text-rose-400 hover:bg-gray-800 rounded-b-xl transition-colors duration-200 font-semibold"
               onClick={onLogout}
               disabled={isLoggingOut}
             >
