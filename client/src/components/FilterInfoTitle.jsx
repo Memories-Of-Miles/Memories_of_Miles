@@ -4,21 +4,17 @@ import { IoMdClose } from "react-icons/io"
 
 /**
  * FilterInfoTitle Component
- * 
- * Displays information about the active filter applied to travel stories.
+ * * Displays information about the active filter applied to travel stories.
  * Shows either search results header or date range filter with the ability to clear.
- * 
- * @param {string} filterType - Type of filter being applied ('search' or 'date')
+ * * @param {string} filterType - Type of filter being applied ('search' or 'date')
  * @param {object} filterDate - Object containing from and to dates for filtering
  * @param {function} onClear - Handler function to clear the current filter
  */
 const FilterInfoTitle = ({ filterType, filterDate, onClear }) => {
   /**
    * DateRangeChip Component
-   * 
-   * Displays a chip containing the selected date range with a clear button.
-   * 
-   * @param {object} date - Object with from and to properties representing the date range
+   * * Displays a chip containing the selected date range with a clear button.
+   * * @param {object} date - Object with from and to properties representing the date range
    */
   const DateRangeChip = ({ date }) => {
     // Format dates or show N/A if not provided
@@ -29,8 +25,8 @@ const FilterInfoTitle = ({ filterType, filterDate, onClear }) => {
     const endDate = date?.to ? moment(date?.to).format("Do MMM YYYY") : "N/A"
 
     return (
-      <div className="flex items-center gap-2 bg-slate-700/50 border border-slate-600 px-4 py-2 rounded-xl shadow-sm hover:shadow-md transition-all duration-300">
-        <div className="flex items-center gap-1 text-slate-200">
+      <div className="flex items-center gap-2 bg-gray-800/50 border border-gray-700 px-4 py-2 rounded-xl shadow-sm hover:shadow-md transition-all duration-300">
+        <div className="flex items-center gap-1 text-gray-200">
           <svg
             className="w-4 h-4"
             viewBox="0 0 24 24"
@@ -57,7 +53,7 @@ const FilterInfoTitle = ({ filterType, filterDate, onClear }) => {
 
         <button
           onClick={onClear}
-          className="p-1 rounded-full hover:bg-slate-600 text-slate-400 hover:text-red-400 transition-all duration-300 hover:scale-110"
+          className="p-1 rounded-full hover:bg-gray-700 text-gray-400 hover:text-rose-400 transition-all duration-300 hover:scale-110"
           title="Clear filter"
         >
           <IoMdClose className="w-4 h-4" />
@@ -74,7 +70,7 @@ const FilterInfoTitle = ({ filterType, filterDate, onClear }) => {
         {filterType === "search" ? (
           <div className="flex items-center gap-2 mb-4">
             {/* Search icon with gradient background */}
-            <div className="w-8 h-8 bg-gradient-to-r from-emerald-400 to-sky-400 rounded-lg flex items-center justify-center">
+            <div className="w-8 h-8 bg-gradient-to-r from-indigo-500 to-pink-500 rounded-lg flex items-center justify-center shadow-lg shadow-indigo-500/20">
               <svg
                 className="w-4 h-4 text-white"
                 viewBox="0 0 24 24"
@@ -93,7 +89,7 @@ const FilterInfoTitle = ({ filterType, filterDate, onClear }) => {
           <div className="flex flex-col sm:flex-row sm:items-center gap-3">
             <div className="flex items-center gap-2">
               {/* Location pin icon with gradient background */}
-              <div className="w-8 h-8 bg-gradient-to-r from-emerald-400 to-sky-400 rounded-lg flex items-center justify-center">
+              <div className="w-8 h-8 bg-gradient-to-r from-indigo-500 to-pink-500 rounded-lg flex items-center justify-center shadow-lg shadow-indigo-500/20">
                 <svg
                   className="w-4 h-4 text-white"
                   viewBox="0 0 24 24"
