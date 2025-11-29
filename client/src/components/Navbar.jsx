@@ -38,7 +38,7 @@ const Navbar = ({ searchQuery, setSearchQuery, onSearchNote, handleClearSearch }
             <span className="text-white font-bold text-lg">M</span>
           </div>
           <span className="text-lg font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400">
-            Memoirs
+            Memoirs of Miles
           </span>
         </Link>
 
