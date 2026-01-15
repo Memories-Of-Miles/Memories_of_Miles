@@ -1,7 +1,8 @@
 import axios from 'axios';
 
 const axiosInstance = axios.create({
-  baseURL: 'http://localhost:3000/api',
+  // baseURL: 'http://localhost:3000/api',               // Used for local development
+  baseURL: 'http://65.2.73.140:3000/api',       // Production API URL
   withCredentials: true
 });
 
