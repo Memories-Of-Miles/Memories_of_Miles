@@ -2,7 +2,19 @@ import { fileURLToPath } from "url"
 import TravelStory from "../models/travelStory.model.js"
 import { errorHandler } from "../utils/error.js"
 import path from "path"
-import fs from "fs"
+import { S3Client, DeleteObjectCommand } from "@aws-sdk/client-s3"
+import dotenv from "dotenv"
+
+dotenv.config()
+
+// Configure AWS S3 Client (v3)
+const s3 = new S3Client({
+  region: process.env.AWS_REGION,
+  credentials: {
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  },
+})
 
 export const addTravelStory = async (req, res, next) => {
   const { title, story, visitedLocation, imageUrl, visitedDate } = req.body
@@ -58,7 +70,8 @@ export const imageUpload = async (req, res, next) => {
       return next(errorHandler(400, "No image uploaded"))
     }
 
-    const imageUrl = `http://localhost:3000/uploads/${req.file.filename}`
+    // S3 returns the URL in req.file.location
+    const imageUrl = req.file.location
 
     res.status(201).json({ imageUrl })
   } catch (error) {
@@ -79,21 +92,17 @@ export const deleteImage = async (req, res, next) => {
   }
 
   try {
-    // extract the file name from the imageUrl
-    const filename = path.basename(imageUrl)
+    // Extract the key from S3 URL (the filename)
+    const urlParts = imageUrl.split("/")
+    const key = urlParts[urlParts.length - 1]
 
-    // Delete the file path
-    const filePath = path.join(rootDir, "uploads", filename)
+    // Delete from S3 using v3
+    const command = new DeleteObjectCommand({
+      Bucket: process.env.AWS_BUCKET_NAME,
+      Key: key,
+    })
 
-    console.log(filePath)
-
-    // check if the file exists
-    if (!fs.existsSync(filePath)) {
-      return next(errorHandler(404, "Image not found!"))
-    }
-
-    // delete the file
-    await fs.promises.unlink(filePath)
+    await s3.send(command)
 
     res.status(200).json({ message: "Image deleted successfully!" })
   } catch (error) {
@@ -160,16 +169,18 @@ export const deleteTravelStory = async (req, res, next) => {
     // Extract the filename from the imageUrl
     const imageUrl = travelStory.imageUrl
 
-    if (imageUrl && imageUrl !== placeholderImageUrl) {
-      // Extract the filename from the image url
-      const filename = path.basename(imageUrl)
-      const filePath = path.join(rootDir, "uploads", filename)
+    if (imageUrl && imageUrl !== placeholderImageUrl && imageUrl.includes(process.env.AWS_BUCKET_NAME)) {
+      // Extract the key from S3 URL
+      const urlParts = imageUrl.split("/")
+      const key = urlParts[urlParts.length - 1]
 
-      // Check if the file exists before deleting
-      if (fs.existsSync(filePath)) {
-        // delete the file
-        await fs.promises.unlink(filePath) // delete the file asynchronously
-      }
+      // Delete from S3 using v3
+      const command = new DeleteObjectCommand({
+        Bucket: process.env.AWS_BUCKET_NAME,
+        Key: key,
+      })
+
+      await s3.send(command)
     }
 
     res.status(200).json({ message: "Travel story deleted successfully!" })

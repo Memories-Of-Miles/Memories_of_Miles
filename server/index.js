@@ -5,12 +5,13 @@ import dotenv from "dotenv";
 import path from "path";
 import { fileURLToPath } from "url";
 
+// Load environment variables FIRST
+dotenv.config();
+
 // Import Routes
 import authRouter from "./routes/auth.route.js";
 import userRouter from "./routes/user.route.js";
 import travelStoryRouter from "./routes/travelStory.route.js";
-
-dotenv.config();
 
 // Fix __dirname for ES Modules
 const __filename = fileURLToPath(import.meta.url);
