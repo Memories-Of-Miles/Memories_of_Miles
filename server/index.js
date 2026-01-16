@@ -69,7 +69,7 @@ app.use("/api/auth", authRouter);
 app.use("/api/user", userRouter);
 app.use("/api/travel-story", travelStoryRouter);
 
-/* -------------------- ERROR HANDLER -------------------- */
+/* -------------------- ERROR HANDLER  -------------------- */
 app.use((err, req, res, next) => {
   console.error(err);
 
@@ -83,7 +83,7 @@ app.use((err, req, res, next) => {
   });
 });
 
-/* -------------------- SERVER START with PM2 -------------------- */
+/* -------------------- SERVER START WITH PM2  -------------------- */
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`🚀 Server running on port ${PORT}`);
 });
