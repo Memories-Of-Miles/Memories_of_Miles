@@ -83,7 +83,7 @@ app.use((err, req, res, next) => {
   });
 });
 
-/* -------------------- SERVER START WITH PM2  -------------------- */
+/* >>>>>>>>>>>>>>>>>> SERVER START WITH PM2  <<<<<<<<<<<<<<<<<<< */
 app.listen(PORT, "0.0.0.0", () => {
-  console.log(`Server running on port ${PORT} 🎉`);
+  console.log(`🎉Server running on port ${PORT} 🎉`);
 });
