@@ -5,15 +5,12 @@ import dotenv from "dotenv";
 import path from "path";
 import { fileURLToPath } from "url";
 
-// Load environment variables FIRST
 dotenv.config();
 
-// Import Routes
 import authRouter from "./routes/auth.route.js";
 import userRouter from "./routes/user.route.js";
 import travelStoryRouter from "./routes/travelStory.route.js";
 
-// Fix __dirname for ES Modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -22,23 +19,28 @@ mongoose.connect(process.env.MONGO_URI)
   .catch((err) => console.log(err));
 
 const app = express();
+const PORT = process.env.PORT || 3000;
 
 // Middleware
 app.use(express.json());
 app.use(cors({
-  origin: "http://localhost:5173", // Change this to your frontend URL
-  credentials: true, // Allow cookies/headers
+  origin: "http://localhost:5173",
+  credentials: true,
 }));
 
-// Serve Static Files (Images)
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
+// ✅ Root health check
+app.get("/", (req, res) => {
+  res.send(`Server is running on ${PORT}`);
+});
 
 // Routes
 app.use("/api/auth", authRouter);
 app.use("/api/user", userRouter);
 app.use("/api/travel-story", travelStoryRouter);
 
-// Error Handling Middleware
+// Error handler
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;
   const message = err.message || "Internal Server Error";
@@ -49,6 +51,6 @@ app.use((err, req, res, next) => {
   });
 });
 
-app.listen(3000, () => {
-  console.log("Server is running on port 3000");
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });
