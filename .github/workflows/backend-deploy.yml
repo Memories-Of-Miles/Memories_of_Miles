@@ -31,6 +31,6 @@ jobs:
             --parameters commands='[
               "cd /home/ubuntu/server",
               "git pull origin main",
-              "npm install --production",
-              "pm2 reload ecosystem.config.cjs --env production"
+              "npm install ",
+              " pm2 restart all "
             ]'
