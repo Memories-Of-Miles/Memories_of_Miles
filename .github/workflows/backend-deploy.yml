@@ -1,4 +1,4 @@
-name: Backend CI/CD (EC2 + PM2)
+name: Backend CI/CD (Docker + EC2)
 
 on:
   push:
@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Configure AWS credentials
@@ -22,19 +22,24 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Deploy backend using SSM (correct user)
+      - name: Deploy backend using Docker on EC2
         run: |
-         aws ssm send-command \
-         --instance-ids "${{ secrets.EC2_INSTANCE_ID }}" \
-         --document-name "AWS-RunShellScript" \
-         --comment "Deploy backend via GitHub Actions" \
-         --parameters commands='[
-         "sudo -u ubuntu -H bash -lc \"\
-          cd /home/ubuntu/Memories_of_Miles/server && \
-          git fetch origin && \
-          git reset --hard origin/main && \
-          npm install && \
-          pm2 startOrReload ecosystem.config.cjs --env production && \
-          pm2 save\
-          \""
-          ]'
+          aws ssm send-command \
+            --instance-ids "${{ secrets.EC2_INSTANCE_ID }}" \
+            --document-name "AWS-RunShellScript" \
+            --comment "Docker deploy backend" \
+            --parameters commands='[
+              "sudo -u ubuntu -H bash -lc \"\
+                cd /home/ubuntu && \
+                if [ ! -d Memories_of_Miles ]; then \
+                  git clone https://github.com/Memories-Of-Miles/Memories_of_Miles.git; \
+                fi && \
+                cd Memories_of_Miles && \
+                git fetch origin && \
+                git reset --hard origin/main && \
+                cd /home/ubuntu && \
+                docker-compose down && \
+                docker-compose build --no-cache && \
+                docker-compose up -d \
+              \""
+            ]'
