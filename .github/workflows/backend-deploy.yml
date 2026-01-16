@@ -22,16 +22,32 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Deploy backend using SSM
+      - name: Deploy backend using SSM (debug enabled)
         run: |
-          aws ssm send-command \
-            --instance-ids "${{ secrets.EC2_INSTANCE_ID }}" \
-            --document-name "AWS-RunShellScript" \
-            --comment "Deploy backend via GitHub Actions" \
-            --parameters commands='[
-              "cd /home/ubuntu/Memories_of_Miles/server",
-              "git pull origin main",
-              "npm install ",
-              "pm2 startOrReload ecosystem.config.cjs --env production",
-              "pm2 save"
+         aws ssm send-command \
+         --instance-ids "${{ secrets.EC2_INSTANCE_ID }}" \
+         --document-name "AWS-RunShellScript" \
+         --comment "Deploy backend via GitHub Actions (debug)" \
+         --parameters commands='[
+         "set -xe",
+
+         "echo ==== STEP 1: Move to server directory ====",
+         "cd /home/ubuntu/Memories_of_Miles/server",
+
+         "echo ==== STEP 2: Show current git status ====",
+         "git status",
+
+         "echo ==== STEP 3: Pull latest code ====",
+         "git pull origin main",
+
+         "echo ==== STEP 4: Install dependencies ====",
+         "npm install",
+
+         "echo ==== STEP 5: Reload PM2 ====",
+         "pm2 startOrReload ecosystem.config.cjs --env production",
+
+         "echo ==== STEP 6: Save PM2 process list ====",
+         "pm2 save",
+
+         "echo ==== DEPLOYMENT FINISHED SUCCESSFULLY ===="
             ]'
