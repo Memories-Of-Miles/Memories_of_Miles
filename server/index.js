@@ -61,7 +61,7 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 /* -------------------- HEALTH CHECK -------------------- */
 app.get("/", (req, res) => {
-  res.status(200).send(`Server is running on port ${PORT}`);
+  res.status(200).send(`🚀🎉 Server is running on port ${PORT} 🚀🎉`);
 });
 
 /* -------------------- ROUTES -------------------- */
